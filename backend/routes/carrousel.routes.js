@@ -21,7 +21,7 @@ carrouselRouter.get('', (req, res) => {
   };
 
   // List objects from the specified S3 bucket prefix
-  s3.listObjectsV2(params, (err, data) => {
+  s3.listObjectsV2(s3Params, (err, data) => {
     if (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
