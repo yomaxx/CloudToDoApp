@@ -13,13 +13,14 @@ const s3 = new AWS.S3();
 
 const BUCKET_NAME ='${BUCKET_NAME}';
 
-carrouselRouter.get('', (req, res) => {
-  const s3Params = {
-    Bucket: BUCKET_NAME
+const s3Params = {
+    Bucket:'${BUCKET_NAME}'
   };
 
+carrouselRouter.get('', (req, res) => {
+
   // List objects from the specified S3 bucket prefix
-  s3.listObjectsV2(s3Params, (err, data) => {
+  s3.listObjectsV2(s3Params, function (err, data) {
     if (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal Server Error' });
@@ -27,9 +28,11 @@ carrouselRouter.get('', (req, res) => {
         // Format the output as {"url":"key"}
         const formattedData = data.Contents.map(item => {
             return { url: `https://${s3Params.Bucket}.s3.amazonaws.com/${item.Key}` };
-        });
+        }
+        );
         res.json(formattedData);
     }
+
   });
 });
 
