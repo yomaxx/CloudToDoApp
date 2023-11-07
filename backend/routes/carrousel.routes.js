@@ -11,7 +11,7 @@ AWS.config.update({
 
 const s3 = new AWS.S3();
 
-const BUCKET_NAME = '${BUCKET_NAME}';
+const BUCKET_NAME ='${BUCKET_NAME}';
 
 carrouselRouter.get('', (req, res) => {
   // Specify the S3 bucket key/prefix for your images
