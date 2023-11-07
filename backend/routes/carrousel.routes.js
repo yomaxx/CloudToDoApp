@@ -21,19 +21,18 @@ carrouselRouter.get('', (req, res) => {
   };
 
   // List objects from the specified S3 bucket prefix
-  s3.listObjectsV2(s3Params, (err, data) => {
+  s3.listObjectsV2(params, (err, data) => {
     if (err) {
-      console.error('Error fetching images from S3:', err);
-      res.status(500).send('Internal Server Error');
-    } else {
-      // Extract the image URLs from the S3 response
-      const imageUrls = data.Contents.map(item => {
-        return `https://${BUCKET_NAME}.s3.amazonaws.com/${item.Key}`;
-      });
-
-      res.json(imageUrls);
+        console.error(err);
+        res.status(500).json({ error: 'Internal Server Error' });
+      } else {
+        // Format the output as {"url":"key"}
+        const formattedData = data.Contents.map(item => {
+            return { url: `https://YOUR_S3_BUCKET_NAME.s3.YOUR_S3_REGION.amazonaws.com/${item.Key}` };
+        });
+        res.json(formattedData);
     }
-  });
+});
 });
 
 module.exports = carrouselRouter;
