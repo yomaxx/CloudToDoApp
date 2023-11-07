@@ -3,7 +3,7 @@ const carrouselRouter = express.Router();
 //const carrouselData = require('./../data/carrousel.json');
 
 const { DOMParser } = require('xmldom');
-const fetch = require('node-fetch');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 const bucketName = process.env.BUCKET_NAME;
 const endpointUrl = `https://${bucketName}.s3.amazonaws.com`;
 
