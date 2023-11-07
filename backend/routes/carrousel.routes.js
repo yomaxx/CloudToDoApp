@@ -1,27 +1,39 @@
 const express = require('express');
+const AWS = require('aws-sdk');
 const carrouselRouter = express.Router();
-//const carrouselData = require('./../data/carrousel.json');
 
-const { DOMParser } = require('xmldom');
-const fetch = require('node-fetch');
-const bucketName = process.env.BUCKET_NAME;
-const endpointUrl = `https://${bucketName}.s3.amazonaws.com`;
+// Configure AWS SDK with your credentials and region
+AWS.config.update({
+  accessKeyId: '${AWS_ACCESS_KEY_ID}}',
+  secretAccessKey: '${AWS_SECRET_ACCESS_KEY}',
+  region: 'US-EAST-1'
+});
+
+const s3 = new AWS.S3();
+
+const BUCKET_NAME = '${BUCKET_NAME}';
 
 carrouselRouter.get('', (req, res) => {
-const objectUrls = [];
-  fetch(endpointUrl)
-  .then(response => response.text())
-  .then(xmlString => {
-    const parser = new DOMParser();
-    const xmlDocument = parser.parseFromString(xmlString, 'application/xml');
-    const contentlist = xmlDocument.getElementsByTagName('Key');
-    
-    // Loop over key values and create urls
-    for (let i = 0; i < contentlist.length; i++) {
-        const objectUrl = `${endpointUrl}/${contentlist[i].textContent}`;
-        objectUrls.push({url: objectUrl});
+  // Specify the S3 bucket key/prefix for your images
+  const s3Params = {
+    Bucket: BUCKET_NAME,
+    Prefix: 'images/' // adjust the prefix based on your S3 bucket structure
+  };
+
+  // List objects from the specified S3 bucket prefix
+  s3.listObjectsV2(s3Params, (err, data) => {
+    if (err) {
+      console.error('Error fetching images from S3:', err);
+      res.status(500).send('Internal Server Error');
+    } else {
+      // Extract the image URLs from the S3 response
+      const imageUrls = data.Contents.map(item => {
+        return `https://${BUCKET_NAME}.s3.amazonaws.com/${item.Key}`;
+      });
+
+      res.json(imageUrls);
     }
-    res.json(objectUrls);
-  })
-  .catch(err => console.error(err));
+  });
 });
+
+module.exports = carrouselRouter;
