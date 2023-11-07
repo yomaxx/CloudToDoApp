@@ -6,7 +6,7 @@ const carrouselRouter = express.Router();
 AWS.config.update({
   accessKeyId: '${AWS_ACCESS_KEY_ID}}',
   secretAccessKey: '${AWS_SECRET_ACCESS_KEY}',
-  region: 'US-EAST-1'
+  region: 'us-east-1'
 });
 
 const s3 = new AWS.S3();
@@ -16,7 +16,7 @@ const BUCKET_NAME ='${BUCKET_NAME}';
 carrouselRouter.get('', (req, res) => {
   // Specify the S3 bucket key/prefix for your images
   const s3Params = {
-    Bucket: '${BUCKET_NAME}'
+    Bucket: 'productionemmer'
   };
 
   // List objects from the specified S3 bucket prefix
