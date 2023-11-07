@@ -2,12 +2,11 @@ const express = require('express');
 const AWS = require('aws-sdk');
 const carrouselRouter = express.Router();
 
-// Configure AWS SDK with your credentials and region
 AWS.config.update({
   accessKeyId: '${AWS_ACCESS_KEY_ID}}',
   secretAccessKey: '${AWS_SECRET_ACCESS_KEY}',
   SessionToken: '${AWS_SESSION_TOKEN}',
-  //region: 'us-east-1'
+  region: 'us-east-1'
 });
 
 const s3 = new AWS.S3();
@@ -15,9 +14,8 @@ const s3 = new AWS.S3();
 const BUCKET_NAME ='${BUCKET_NAME}';
 
 carrouselRouter.get('', (req, res) => {
-  // Specify the S3 bucket key/prefix for your images
   const s3Params = {
-    Bucket: 'productionemmer'
+    Bucket: BUCKET_NAME
   };
 
   // List objects from the specified S3 bucket prefix
