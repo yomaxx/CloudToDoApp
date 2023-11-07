@@ -16,8 +16,7 @@ const BUCKET_NAME ='${BUCKET_NAME}';
 carrouselRouter.get('', (req, res) => {
   // Specify the S3 bucket key/prefix for your images
   const s3Params = {
-    Bucket: '${BUCKET_NAME}',
-    Prefix: 'images/' // adjust the prefix based on your S3 bucket structure
+    Bucket: '${BUCKET_NAME}'
   };
 
   // List objects from the specified S3 bucket prefix
@@ -28,11 +27,11 @@ carrouselRouter.get('', (req, res) => {
       } else {
         // Format the output as {"url":"key"}
         const formattedData = data.Contents.map(item => {
-            return { url: `https://${s3Params.Bucket}.s3.amazonaws.com/${s3Params.Prefix}${item.Key}` };
+            return { url: `https://${s3Params.Bucket}.s3.amazonaws.com/${item.Key}` };
         });
         res.json(formattedData);
     }
-});
+  });
 });
 
 module.exports = carrouselRouter;
