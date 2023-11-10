@@ -1,38 +1,34 @@
+module.exports = carrouselRouter;
+
 const express = require('express');
-const AWS = require('aws-sdk');
 const carrouselRouter = express.Router();
-
-AWS.config.update({
-  accessKeyId: '${AWS_ACCESS_KEY_ID}}',
-  secretAccessKey: '${AWS_SECRET_ACCESS_KEY}',
-  SessionToken: '${AWS_SESSION_TOKEN}',
-  region: 'us-east-1'
-});
-
+const AWS = require('aws-sdk'); // Importeer de AWS SDK
 const s3 = new AWS.S3();
 
-const BUCKET_NAME ='${BUCKET_NAME}';
-
-const s3Params = {
-    Bucket:'${BUCKET_NAME}'
-  };
+const BUCKET_NAME = '${BUCKET_NAME}'; // Vervang dit door je daadwerkelijke S3-bucketnaam
 
 carrouselRouter.get('', (req, res) => {
+  // Gebruik de AWS SDK om een lijst van objecten (afbeeldingen) in het S3-bucket op te halen
+  const params = {
+    Bucket: BUCKET_NAME,
+  };
 
-  // List objects from the specified S3 bucket prefix
-  s3.listObjectsV2(s3Params, function (err, data) {
+  s3.listObjectsV2(params, (err, data) => {
     if (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal Server Error' });
-      } else {
-        // Format the output as {"url":"key"}
-        const formattedData = data.Contents.map(item => {
-            return { url: `https://${s3Params.Bucket}.s3.amazonaws.com/${item.Key}` };
-        }
-        );
-        res.json(formattedData);
-    }
+      console.error(err);
+      res.status(500).send('Fout bij het ophalen van afbeeldingen uit S3');
+    } else {
+      // Doorloop de lijst van objecten en genereer de URL's op basis van het bucket en objectpad
+      const images = data.Contents.map((object) => {
+        const imageUrl = s3.getSignedUrl('getObject', {
+          Bucket: BUCKET_NAME,
+          Key: object.Key,
+        });
+        return { url: imageUrl }; // Geef het "url" -sleutel- en "waarde" -formaat terug
+      });
 
+      res.json(images);
+    }
   });
 });
 
