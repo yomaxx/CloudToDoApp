@@ -1,5 +1,3 @@
-module.exports = carrouselRouter;
-
 const express = require('express');
 const carrouselRouter = express.Router();
 const AWS = require('aws-sdk'); // Importeer de AWS SDK
