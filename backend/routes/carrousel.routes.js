@@ -3,7 +3,7 @@ const carrouselRouter = express.Router();
 const AWS = require('aws-sdk'); // Importeer de AWS SDK
 const s3 = new AWS.S3();
 
-const BUCKET_NAME = '${BUCKET_NAME}'; // Vervang dit door je daadwerkelijke S3-bucketnaam
+const BUCKET_NAME = 'productionemmer'; // Vervang dit door je daadwerkelijke S3-bucketnaam
 
 carrouselRouter.get('', (req, res) => {
   // Gebruik de AWS SDK om een lijst van objecten (afbeeldingen) in het S3-bucket op te halen
